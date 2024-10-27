@@ -65,6 +65,12 @@ app.get('/chat', async (req, res) => {
     }
 
     const teaches = await fetchTeachesFromGitHub();
+    
+    // Ensure teaches is an array
+    if (!Array.isArray(teaches)) {
+      return res.status(500).json({ error: 'Teaches data is not an array' });
+    }
+
     const match = teaches.find(t => t.message.toLowerCase() === userQuery.toLowerCase());
 
     if (match) {
@@ -168,5 +174,5 @@ app.get('/admin/delete', async (req, res) => {
 });
 
 app.listen(port, () => {
-  console.log(`Advanced AI Chat and Teach Server running on http://localhost:${port}`);
+  console.log(`SIMSIMI Chat and Teach Server running on http://localhost:${port}`);
 });
