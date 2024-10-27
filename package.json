@@ -1,0 +1,17 @@
+{
+  "name": "-chat-teach-server",
+  "version": "1.0.0",
+  "description": "SIMSIMI chat and teach server with GitHub-based storage",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "axios": "^1.2.0",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "@octokit/rest": "^18.0.0"
+  },
+  "author": "NZ R",
+  "license": "ISC"
+}
