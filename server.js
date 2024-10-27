@@ -27,15 +27,24 @@ async function loadTeachingData() {
   }
 }
 
-app.post('/teach', async (req, res) => {
-  const { ask } = req.body;
+app.get('/teach', async (req, res) => {
+  const ask = req.query.ask;
+  const ans = req.query.ans;
+
+  if (ask && ans) {
+    teachingData.push({ ask, ans });
+    await saveTeachingDataToGitHub();
+    return res.send('Teaching data updated successfully!');
+  }
+
   const matchingEntry = teachingData.find(entry => entry.ask.toLowerCase() === ask.toLowerCase());
   res.send(matchingEntry ? matchingEntry.ans : "I don't have an answer for that. 😕");
 });
 
-app.post('/chat', async (req, res) => {
-  const { ask } = req.body;
+app.get('/chat', async (req, res) => {
+  const ask = req.query.ask;
   const apiUrl = `https://www.x-noobs-api.000.pe/sim?ask=${encodeURIComponent(ask)}`;
+  
   try {
     const response = await axios.get(apiUrl);
     res.send(response.data);
@@ -48,16 +57,10 @@ app.get('/monitor', (req, res) => {
   res.json(teachingData);
 });
 
-app.post('/update-teach', async (req, res) => {
-  const { ask, ans } = req.body;
-  teachingData.push({ ask, ans });
-  await saveTeachingDataToGitHub();
-  res.send('Teaching data updated successfully!');
-});
-
 async function saveTeachingDataToGitHub() {
   const jsonData = JSON.stringify({ teaches: teachingData }, null, 2);
   const content = Buffer.from(jsonData).toString('base64');
+
   try {
     await octokit.repos.createOrUpdateFileContents({
       owner: REPO_OWNER,
